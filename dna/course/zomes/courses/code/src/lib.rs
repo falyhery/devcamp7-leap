@@ -22,6 +22,8 @@ use hdk_proc_macros::zome;
 
 mod anchor_trait;
 mod course;
+mod section; 
+mod content;
 
 #[zome]
 mod courses {
@@ -54,9 +56,20 @@ mod courses {
         course::entry::course_entry_def()
     }
 
-    // Section
-    // TODO: implement section entry definitions
+    //  ====================== Section definitions
+    #[entry_def]
+    fn section_anchor_definition() -> ValidatingEntryType {
+        section::anchor::section_anchor_def()
+    }
 
-    // Content
-    // TODO: implement content entry definition
+    #[entry_def]
+    fn section_entry_definition() -> ValidatingEntryType {
+        section::entry::section_entry_def()
+    }
+
+    //  ====================== Content definitions
+    #[entry_def]
+    fn content_entry_definition() -> ValidatingEntryType {
+        content::entry::content_entry_def()
+    }
 }
