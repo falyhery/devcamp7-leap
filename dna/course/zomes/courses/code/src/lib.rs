@@ -102,11 +102,82 @@ mod courses {
         course::handlers::get_my_enrolled_courses()
     }
 
-    // Section
-    // TODO: implement section entry definitions
-    // TODO: implement section CRUD methods
+    //  ====================== Section definitions
+    #[entry_def]
+    fn section_anchor_definition() -> ValidatingEntryType {
+        section::anchor::section_anchor_def()
+    }
 
-    // Content
-    // TODO: implement content entry definition
-    // TODO: implement content CRUD methods
+    #[entry_def]
+    fn section_entry_definition() -> ValidatingEntryType {
+        section::entry::section_entry_def()
+    }
+
+    #[zome_fn("hc_public")]
+    fn create_section(title: String, timestamp: u64) -> ZomeApiResult<Address> {
+        section::handlers::create(title, timestamp)
+    }
+
+    #[zome_fn("hc_public")]
+    fn get_latest_section_entry(
+        section_anchor_address: Address,
+    ) -> ZomeApiResult<Option<section::entry::Section>> {
+        let latest_section_result = section::handlers::get_latest_section(&section_anchor_address)?;
+        match latest_section_result {
+            Some((section_entry, _section_entry_address)) => {
+                return Ok(Some(section_entry));
+            }
+            None => return Ok(None),
+        }
+    }
+
+    #[zome_fn("hc_public")]
+    fn update_section(
+        title: String,
+        section_anchor_address: Address,
+    ) -> ZomeApiResult<Address> {
+        section::handlers::update(title, &section_anchor_address)
+    }
+
+    #[zome_fn("hc_public")]
+    fn delete_section(section_anchor_address: Address) -> ZomeApiResult<Address> {
+        section::handlers::delete(section_anchor_address)
+    }
+
+    //  ====================== Content definitions
+    #[entry_def]
+    fn content_entry_definition() -> ValidatingEntryType {
+        content::entry::content_entry_def()
+    }
+
+    #[zome_fn("hc_public")]
+    fn create_content(name: String, timestamp: u64) -> ZomeApiResult<Address> {
+        content::handlers::create(name, timestamp)
+    }
+
+    #[zome_fn("hc_public")]
+    fn get_latest_content_entry(
+        section_anchor_address: Address,
+    ) -> ZomeApiResult<Option<content::entry::Section>> {
+        let latest_content_result = content::handlers::get_latest_content(&section_anchor_address)?;
+        match latest_content_result {
+            Some((content_entry, _section_entry_address)) => {
+                return Ok(Some(content_entry));
+            }
+            None => return Ok(None),
+        }
+    }
+
+    #[zome_fn("hc_public")]
+    fn update_content(
+        name: String,
+        section_anchor_address: Address,
+    ) -> ZomeApiResult<Address> {
+        content::handlers::update(name, &section_anchor_address)
+    }
+
+    #[zome_fn("hc_public")]
+    fn delete_content(section_anchor_address: Address) -> ZomeApiResult<Address> {
+        content::handlers::delete(section_anchor_address)
+    }
 }
