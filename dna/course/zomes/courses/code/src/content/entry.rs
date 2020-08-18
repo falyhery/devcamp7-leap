@@ -1,5 +1,8 @@
 use hdk::prelude::*;
 use holochain_entry_utils::HolochainEntry;
+use super::validation;
+
+pub const MAX_NAME_LEN: usize = 50;
 
 // NOTE: using self::DefaultJson to disambiguate usage of DefaultJson from this module (hdk::prelude imports it)
 #[derive(Serialize, Deserialize, Debug, self::DefaultJson, Clone)]
@@ -45,17 +48,14 @@ pub fn section_entry_def() -> ValidatingEntryType {
         },
         validation: | validation_data: hdk::EntryValidationData<Content>| {
             match  validation_data {
-                EntryValidationData::Create { .. } => {
-                    // TODO: implement validation
-                    Ok(())
+                EntryValidationData::Create { entry, validation_data } => {
+                    validation::create(entry, validation_data)
                 },
-                EntryValidationData::Modify { .. } => {
-                    // TODO: implement validation
-                    Ok(())
+                EntryValidationData::Modify { new_entry, old_entry, old_entry_header, validation_data } => {
+                    validation::modify(new_entry, old_entry, old_entry_header, validation_data)
                 },
-                EntryValidationData::Delete { .. } => {
-                    // TODO: implement validation
-                    Ok(())
+                EntryValidationData::Delete { old_entry, old_entry_header, validation_data } => {
+                    validation::delete(old_entry, old_entry_header, validation_data)
                 }
             }
         }
