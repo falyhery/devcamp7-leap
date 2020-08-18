@@ -48,17 +48,14 @@ pub fn section_anchor_def() -> ValidatingEntryType {
         },
         validation: | validation_data: hdk::EntryValidationData<SectionAnchor>| {
             match validation_data{
-                EntryValidationData::Create { .. } => {
-                    // TODO: implement validation
-                     Ok(())
+                EntryValidationData::Create { entry, validation_data } => {
+                    validation::anchor_create(entry, validation_data)
                  },
                  EntryValidationData::Modify { .. } => {
-                     // TODO: implement validation
-                    Ok(())
+                    validation::anchor_modify()
                  },
-                 EntryValidationData::Delete { .. } => {
-                     // TODO: implement validation
-                    Ok(())
+                 EntryValidationData::Delete { old_entry, old_entry_header, validation_data } => {
+                    validation::anchor_delete(old_entry, old_entry_header, validation_data)
                  }
             }
         },
@@ -69,8 +66,8 @@ pub fn section_anchor_def() -> ValidatingEntryType {
                 validation_package:||{
                     hdk::ValidationPackageDefinition::Entry
                 },
-                validation:|_validation_data: hdk::LinkValidationData|{
-                   Ok(())
+                validation:|validation_data: hdk::LinkValidationData|{
+                   validation::anchor_to_section_link(validation_data)
                 }
             ),
             to!(
